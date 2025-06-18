@@ -4,6 +4,7 @@ module voting_system::voting_system_tests;
 
 use sui::test_scenario;
 use sui::clock;
+use sui::object;
 use voting_system::proposal::{Self, Proposal, VoteProofNFT};
 use voting_system::dashboard::{Self, AdminCap, Dashboard};
 
@@ -236,8 +237,14 @@ fun test_issue_vote_proof() {
     scenario.next_tx(bob);
     {
         let vote_proof = scenario.take_from_sender<VoteProofNFT>();
+        let proposal = scenario.take_shared<Proposal>();
+        let expected_id = object::id(&proposal);
+
+        assert!(vote_proof.proposal_id == expected_id);
         assert!(vote_proof.vote_proof_url().inner_url() == b"https://thrangra.sirv.com/vote_yes_nft.jpg".to_ascii_string(), EWrongNftUrl);
+
         scenario.return_to_sender(vote_proof);
+        test_scenario::return_shared(proposal);
     };
 
     scenario.end();
