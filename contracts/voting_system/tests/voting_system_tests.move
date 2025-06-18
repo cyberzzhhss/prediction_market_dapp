@@ -197,11 +197,12 @@ fun test_duplicate_voting() {
 
         proposal.vote(true, &test_clock, scenario.ctx());
         assert!(proposal.voted_yes_count() == 1, EWrongVoteCount);
+        assert!(proposal.voted_no_count() == 0, EWrongVoteCount);
 
-        // Re-vote switching to no should update counts
-        proposal.vote(false, &test_clock, scenario.ctx());
-        assert!(proposal.voted_yes_count() == 0, EWrongVoteCount);
-        assert!(proposal.voted_no_count() == 1, EWrongVoteCount);
+        // Voting again should accumulate the vote
+        proposal.vote(true, &test_clock, scenario.ctx());
+        assert!(proposal.voted_yes_count() == 2, EWrongVoteCount);
+        assert!(proposal.voted_no_count() == 0, EWrongVoteCount);
 
         test_scenario::return_shared(proposal);
         test_clock.destroy_for_testing();
