@@ -20,7 +20,7 @@ const NavigationProvider: React.FC<NavigationProps> = ({children}) => {
 
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
-  });
+  }, []);
 
   return (
     <NavigationContext.Provider value={{currentPage, navigate}}>
