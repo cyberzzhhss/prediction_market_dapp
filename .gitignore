@@ -1,0 +1,12 @@
+# Node modules
+node_modules/
+
+# Build artifacts
+build/
+dist/
+output/
+out/
+target/
+
+# macOS Finder
+.DS_Store
