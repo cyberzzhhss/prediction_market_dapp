@@ -7,9 +7,8 @@ use sui::clock::{Clock};
 use sui::event;
 use voting_system::dashboard::AdminCap;
 
-const EDuplicateVote: u64 = 0;
-const EProposalDelisted: u64 = 1;
-const EProposalExpired: u64 = 2;
+const EProposalDelisted: u64 = 0;
+const EProposalExpired: u64 = 1;
 
 public enum ProposalStatus has store, drop {
     Active,
@@ -47,7 +46,16 @@ public struct VoteRegistered has copy, drop {
 public fun vote(self: &mut Proposal, vote_yes: bool, clock: &Clock, ctx: &mut TxContext) {
     assert!(self.expiration > clock.timestamp_ms(), EProposalExpired);
     assert!(self.is_active(), EProposalDelisted);
-    assert!(!self.voters.contains(ctx.sender()), EDuplicateVote);
+
+    // Check if sender already voted and adjust counts accordingly
+    if (self.voters.contains(ctx.sender())) {
+        let previous = table::remove(&mut self.voters, ctx.sender());
+        if (previous) {
+            self.voted_yes_count = self.voted_yes_count - 1;
+        } else {
+            self.voted_no_count = self.voted_no_count - 1;
+        };
+    };
 
     if (vote_yes) {
         self.voted_yes_count = self.voted_yes_count + 1;
