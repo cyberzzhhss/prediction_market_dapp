@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 
 interface VoteModalProps {
   proposal: Proposal;
-  hasVoted: boolean;
   isOpen: boolean;
   onClose: () => void;
   onVote: (votedYes: boolean) => void;
@@ -15,7 +14,6 @@ interface VoteModalProps {
 
 export const VoteModal: FC<VoteModalProps> = ({
   proposal,
-  hasVoted,
   isOpen,
   onClose,
   onVote,
@@ -84,7 +82,7 @@ export const VoteModal: FC<VoteModalProps> = ({
     });
   }
 
-  const votingDisable = hasVoted || isPending || isSuccess;
+  const votingDisable = isPending || isSuccess;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -92,14 +90,15 @@ export const VoteModal: FC<VoteModalProps> = ({
 
         <div className="flex items-start justify-between">
           <h2 className="text-2xl font-bold mb-4">{proposal.title}</h2>
-          {hasVoted || isSuccess ? (
+          {isSuccess ? (
             <div className="w-14 text-sm p-1 font-medium rounded-full bg-green-100 text-gray-800 text-center">
               Voted
             </div>
-          ) : <div className="w-24 text-sm p-1 font-medium rounded-full bg-red-100 text-gray-800 text-center">
-            Not Voted
-          </div>
-          }
+          ) : (
+            <div className="w-24 text-sm p-1 font-medium rounded-full bg-red-100 text-gray-800 text-center">
+              Not Voted
+            </div>
+          )}
         </div>
 
         <p className="mb-6 text-gray-700 dark:text-gray-300">{proposal.description}</p>
