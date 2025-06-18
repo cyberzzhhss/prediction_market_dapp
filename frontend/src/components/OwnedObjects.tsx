@@ -20,7 +20,7 @@ export const OwnedObjects = () => {
     }
   );
 
-  if (!account) return "Cannot retreive account";
+  if (!account) return "Cannot retrieve account";
   if (error) return <div className="text-red-500">Error: {error.message}</div>;
   if (isPending || !response) return <div className="text-center text-gray-500">Loading...</div>;
 
