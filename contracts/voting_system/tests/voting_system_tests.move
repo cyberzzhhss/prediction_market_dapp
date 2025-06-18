@@ -172,7 +172,6 @@ fun test_voting() {
 }
 
 #[test]
-#[expected_failure(abort_code = voting_system::proposal::EDuplicateVote)]
 fun test_duplicate_voting() {
     let bob = @0xB0B;
     let admin = @0xA01;
@@ -197,7 +196,12 @@ fun test_duplicate_voting() {
         test_clock.set_for_testing(200000000000);
 
         proposal.vote(true, &test_clock, scenario.ctx());
-        proposal.vote(true, &test_clock, scenario.ctx());
+        assert!(proposal.voted_yes_count() == 1, EWrongVoteCount);
+
+        // Re-vote switching to no should update counts
+        proposal.vote(false, &test_clock, scenario.ctx());
+        assert!(proposal.voted_yes_count() == 0, EWrongVoteCount);
+        assert!(proposal.voted_no_count() == 1, EWrongVoteCount);
 
         test_scenario::return_shared(proposal);
         test_clock.destroy_for_testing();
