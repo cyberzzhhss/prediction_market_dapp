@@ -73,7 +73,6 @@ export const ProposalItem: FC<ProposalItemsProps> = ({id, voteNft, onVoteTxSucce
       </div>
       <VoteModal
         proposal={proposal}
-        hasVoted={!!voteNft}
         isOpen={isModelOpen}
         onClose={() => setIsModelOpen(false)}
         onVote={(votedYes: boolean) => {
